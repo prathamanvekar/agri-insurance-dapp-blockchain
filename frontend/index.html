@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CropInsure | Smart Crop Insurance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="styles.css?v=20260307a" />
+  </head>
+  <body>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+
+    <nav class="navbar">
+      <div class="nav-brand">
+        <i class="fas fa-leaf"></i>
+        <span>CropInsure</span>
+      </div>
+
+      <div class="nav-links">
+        <a href="#home" data-section="home" class="active">Home</a>
+        <a href="#register" data-section="register">Register</a>
+        <a
+          href="#dashboard"
+          data-section="dashboard"
+          id="navDashboard"
+          class="nav-disabled"
+          aria-disabled="true"
+          >Dashboard</a
+        >
+        <a
+          href="#claims"
+          data-section="claims"
+          id="navClaims"
+          class="nav-disabled"
+          aria-disabled="true"
+          >Claims</a
+        >
+      </div>
+
+      <div class="nav-right">
+        <div id="backendStatus" class="backend-status disconnected">
+          <span class="status-dot"></span>
+          <span id="backendStatusText">Backend not connected</span>
+        </div>
+        <button id="connectWallet" class="btn btn-outline">
+          <i class="fas fa-wallet"></i>
+          <span id="walletBtnText">Connect Wallet</span>
+        </button>
+      </div>
+    </nav>
+
+    <main class="container">
+      <div id="backendBanner" class="backend-banner hidden">
+        <div>
+          <strong>Backend not connected.</strong> Start the backend on port 5001
+          to create policies and load dashboard data.
+        </div>
+        <button id="retryHealthBtn" class="btn btn-sm btn-warning">
+          Retry Connection
+        </button>
+      </div>
+
+      <section id="home" class="section active">
+        <div class="hero">
+          <div class="hero-content">
+            <h1>Weather + NDVI driven crop insurance</h1>
+            <p>
+              Register quickly, monitor crop stress in real time, and trigger
+              claims transparently.
+            </p>
+
+            <div class="step-indicator" aria-label="Policy process steps">
+              <div class="step-pill is-active">1. Register</div>
+              <div class="step-pill">2. Pay Premium</div>
+              <div class="step-pill">3. Monitor</div>
+              <div class="step-pill">4. Claim</div>
+            </div>
+
+            <div class="hero-actions">
+              <button id="getStartedBtn" class="btn btn-primary btn-lg">
+                Get Started <i class="fas fa-arrow-right"></i>
+              </button>
+              <button id="homeRefreshBtn" class="btn btn-secondary btn-lg">
+                <i class="fas fa-rotate"></i> Refresh Data
+              </button>
+            </div>
+          </div>
+
+          <div class="stats-card">
+            <div class="stat">
+              <span class="stat-value" id="totalPolicies">0</span>
+              <span class="stat-label">Policies</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value" id="totalClaims">0</span>
+              <span class="stat-label">Claims</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value" id="totalPayout">INR 0</span>
+              <span class="stat-label">Total Payout</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="register" class="section">
+        <div class="section-header">
+          <h2><i class="fas fa-user-plus"></i> Register New Policy</h2>
+          <p>
+            Wallet is optional. You can skip MetaMask and enter wallet manually.
+          </p>
+        </div>
+
+        <div class="form-container">
+          <div id="formErrors" class="form-errors hidden" role="alert"></div>
+
+          <div class="wallet-helper">
+            <p id="metamaskStatus" class="helper-text">
+              Checking MetaMask availability...
+            </p>
+            <div class="wallet-helper-actions">
+              <button
+                id="autoFillWalletBtn"
+                class="btn btn-sm btn-secondary"
+                type="button"
+                disabled
+              >
+                <i class="fas fa-bolt"></i> Auto-fill from Wallet
+              </button>
+              <button
+                id="skipWalletBtn"
+                class="btn btn-sm btn-ghost"
+                type="button"
+              >
+                Skip Wallet
+              </button>
+            </div>
+          </div>
+
+          <form id="registrationForm" novalidate>
+            <div class="form-group-title">
+              <i class="fas fa-user"></i> Farmer Details
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="farmerName">Full Name *</label>
+                <input
+                  type="text"
+                  id="farmerName"
+                  placeholder="Enter your name"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="farmerPhone">Phone Number *</label>
+                <input
+                  type="tel"
+                  id="farmerPhone"
+                  placeholder="+91 9876543210"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="farmerEmail">Email Address *</label>
+                <input
+                  type="email"
+                  id="farmerEmail"
+                  placeholder="rajesh@example.com"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="walletAddress">Wallet Address (optional)</label>
+                <input type="text" id="walletAddress" placeholder="0x742d..." />
+              </div>
+            </div>
+
+            <div class="form-group-title">
+              <i class="fas fa-map-marker-alt"></i> Farm Details
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="latitude">Latitude *</label>
+                <input
+                  type="number"
+                  id="latitude"
+                  step="0.0001"
+                  placeholder="26.8467"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="longitude">Longitude *</label>
+                <input
+                  type="number"
+                  id="longitude"
+                  step="0.0001"
+                  placeholder="80.9462"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label class="invisible-label">Location Action</label>
+                <button
+                  id="getLocationBtn"
+                  type="button"
+                  class="btn btn-secondary btn-full"
+                >
+                  <i class="fas fa-location-crosshairs"></i> Use Current
+                  Location
+                </button>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="cropType">Crop Type *</label>
+                <select id="cropType" required>
+                  <option value="">Select Crop</option>
+                  <option value="rice">Rice</option>
+                  <option value="wheat">Wheat</option>
+                  <option value="maize">Maize</option>
+                  <option value="cotton">Cotton</option>
+                  <option value="sugarcane">Sugarcane</option>
+                  <option value="chickpea">Chickpea</option>
+                  <option value="groundnut">Groundnut</option>
+                  <option value="soybean">Soybean</option>
+                  <option value="mustard">Mustard</option>
+                  <option value="potato">Potato</option>
+                  <option value="onion">Onion</option>
+                  <option value="tomato">Tomato</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="sowingDate">Sowing Date *</label>
+                <input type="date" id="sowingDate" required />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="farmArea">Farm Area (Acres) *</label>
+                <input
+                  type="number"
+                  id="farmArea"
+                  step="0.1"
+                  placeholder="5"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="expectedYield">Expected Yield (Quintals) *</label>
+                <input
+                  type="number"
+                  id="expectedYield"
+                  step="0.1"
+                  placeholder="25"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group-title">
+              <i class="fas fa-shield-halved"></i> Insurance Details
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="premiumAmount">Premium Amount (INR) *</label>
+                <input
+                  type="number"
+                  id="premiumAmount"
+                  min="1000"
+                  placeholder="5000"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="coverageAmount">Coverage Amount (INR)</label>
+                <input
+                  type="number"
+                  id="coverageAmount"
+                  readonly
+                  placeholder="Auto calculated"
+                />
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button id="loadDemoBtn" type="button" class="btn btn-secondary">
+                <i class="fas fa-vial"></i> Load Demo Data
+              </button>
+              <button
+                id="previewWeatherBtn"
+                type="button"
+                class="btn btn-ghost"
+              >
+                <i class="fas fa-cloud-sun"></i> Preview Weather
+              </button>
+              <button
+                id="createPolicyBtn"
+                type="submit"
+                class="btn btn-primary"
+              >
+                <i class="fas fa-file-circle-plus"></i> Create Policy
+              </button>
+            </div>
+          </form>
+
+          <div id="weatherPreview" class="preview-card hidden">
+            <h3><i class="fas fa-cloud"></i> Weather Preview</h3>
+            <div id="weatherPreviewContent"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="dashboard" class="section">
+        <div class="section-header">
+          <h2><i class="fas fa-chart-line"></i> Policy Dashboard</h2>
+          <p>
+            Track your policies, weather risk, NDVI trends, and claim
+            eligibility.
+          </p>
+        </div>
+
+        <div class="policy-selector">
+          <label for="policySelect">Select Policy</label>
+          <select id="policySelect">
+            <option value="">-- Select a Policy --</option>
+          </select>
+          <button
+            id="refreshPoliciesBtn"
+            class="btn btn-sm btn-secondary"
+            type="button"
+          >
+            <i class="fas fa-rotate"></i> Refresh
+          </button>
+        </div>
+
+        <div id="policyEmptyState" class="empty-state-panel hidden">
+          <h3>No policies found</h3>
+          <p>Create your first policy to unlock dashboard and claims data.</p>
+          <div class="panel-actions">
+            <button class="btn btn-primary" data-action="go-register">
+              Create Policy
+            </button>
+            <button class="btn btn-secondary" id="emptyRefreshPoliciesBtn">
+              Try Refresh
+            </button>
+          </div>
+        </div>
+
+        <div id="dashboardContent" class="dashboard-grid">
+          <article class="dashboard-card">
+            <div class="card-header">
+              <h3><i class="fas fa-file-contract"></i> Policy Information</h3>
+              <span class="status-badge" id="policyStatus">--</span>
+            </div>
+            <div class="card-body" id="policyInfoContent">
+              <p class="empty-state">Select a policy to view details.</p>
+            </div>
+          </article>
+
+          <article class="dashboard-card">
+            <div class="card-header">
+              <h3><i class="fas fa-cloud-rain"></i> Current Weather</h3>
+              <span class="trigger-badge" id="weatherTrigger">--</span>
+            </div>
+            <div class="card-body" id="weatherContent">
+              <p class="empty-state">Select a policy to view weather data.</p>
+            </div>
+          </article>
+
+          <article class="dashboard-card">
+            <div class="card-header">
+              <h3><i class="fas fa-satellite"></i> NDVI Analysis</h3>
+              <span class="trigger-badge" id="ndviTrigger">--</span>
+            </div>
+            <div class="card-body" id="ndviContent">
+              <p class="empty-state">Select a policy to view NDVI analysis.</p>
+            </div>
+          </article>
+
+          <article class="dashboard-card">
+            <div class="card-header">
+              <h3><i class="fas fa-brain"></i> Risk Prediction</h3>
+            </div>
+            <div class="card-body" id="predictionContent">
+              <p class="empty-state">
+                Select a policy to view model predictions.
+              </p>
+            </div>
+          </article>
+
+          <article class="dashboard-card chart-card">
+            <div class="card-header">
+              <h3><i class="fas fa-chart-area"></i> NDVI Trend</h3>
+            </div>
+            <div class="card-body chart-body">
+              <canvas id="ndviChart"></canvas>
+            </div>
+          </article>
+
+          <article class="dashboard-card">
+            <div class="card-header">
+              <h3><i class="fas fa-gavel"></i> Claim Status</h3>
+            </div>
+            <div class="card-body" id="claimEligibility">
+              <p class="empty-state">
+                Select a policy to check claim eligibility.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="claims" class="section">
+        <div class="section-header">
+          <h2><i class="fas fa-file-invoice-dollar"></i> Claims</h2>
+          <p>
+            Review claim history and process new claims for eligible policies.
+          </p>
+        </div>
+
+        <div class="claims-container">
+          <div class="claims-header">
+            <h3>All Claims</h3>
+            <button
+              id="refreshClaimsBtn"
+              class="btn btn-sm btn-secondary"
+              type="button"
+            >
+              <i class="fas fa-rotate"></i> Refresh
+            </button>
+          </div>
+          <div class="claims-table-wrapper">
+            <table class="claims-table">
+              <thead>
+                <tr>
+                  <th>Claim ID</th>
+                  <th>Policy ID</th>
+                  <th>Status</th>
+                  <th>Weather</th>
+                  <th>NDVI</th>
+                  <th>Payout</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="claimsTableBody">
+                <tr>
+                  <td colspan="7" class="empty-state">No claims found.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="process-claim-container">
+          <h3>Process Claim</h3>
+          <div class="form-row claim-controls">
+            <div class="form-group">
+              <label for="claimPolicyId">Policy ID</label>
+              <input
+                type="text"
+                id="claimPolicyId"
+                placeholder="POL-2026-0001"
+              />
+              <label class="checkbox-inline" for="forceEligibleClaim">
+                <input type="checkbox" id="forceEligibleClaim" />
+                Force eligible (test mode)
+              </label>
+            </div>
+            <div class="form-group claim-btn-group">
+              <button
+                id="checkEligibilityBtn"
+                class="btn btn-primary"
+                type="button"
+              >
+                <i class="fas fa-magnifying-glass"></i> Check Eligibility
+              </button>
+              <button
+                id="processClaimBtn"
+                class="btn btn-success"
+                type="button"
+              >
+                <i class="fas fa-check"></i> Process Claim
+              </button>
+            </div>
+          </div>
+          <div id="claimResult" class="claim-result hidden"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>CropInsure | Smart Contract Based Crop Insurance</p>
+    </footer>
+
+    <div
+      id="successModal"
+      class="modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="successModalTitle"
+    >
+      <div class="modal-card">
+        <h3 id="successModalTitle">Policy Created Successfully</h3>
+        <div id="successModalDetails"></div>
+        <div class="modal-actions">
+          <button id="closeSuccessModalBtn" class="btn btn-secondary">
+            Stay Here
+          </button>
+          <button id="goDashboardBtn" class="btn btn-primary">
+            Go to Dashboard
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    <div id="loadingOverlay" class="loading-overlay hidden">
+      <div class="spinner"></div>
+      <p id="loadingText">Loading...</p>
+    </div>
+
+    <div id="debugPanel" class="debug-panel debug-collapsed">
+      <button id="debugToggleBtn" class="debug-toggle" type="button">
+        <i class="fas fa-bug"></i> Debug
+      </button>
+      <div class="debug-body">
+        <h4>Debug Mode</h4>
+        <div class="debug-row">
+          <span>API Status</span>
+          <span id="debugApiStatus" class="debug-pill off">Disconnected</span>
+        </div>
+        <div class="debug-row">
+          <span>Policies</span>
+          <span id="debugPolicyCount">0</span>
+        </div>
+        <div class="debug-row-col">
+          <label>Last API Call</label>
+          <pre id="debugLastCall">-</pre>
+        </div>
+        <div class="debug-row-col">
+          <label>Last API Response</label>
+          <pre id="debugLastResponse">-</pre>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js?v=20260307a"></script>
+  </body>
+</html>

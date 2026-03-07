@@ -1,0 +1,58 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+backend/venv/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Local databases and runtime files
+*.db
+*.sqlite
+*.sqlite3
+backend/database/*.db
+*.log
+
+# Coverage / build outputs
+.coverage
+.coverage.*
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Frontend package artifacts (if added later)
+node_modules/
+
+# Blockchain local deployment artifacts
+# Keep Solidity source; ignore machine/session-specific deployment outputs.
+backend/contracts/deployed_address.json
+backend/contracts/*.address.json
+
+# Local notes or temp files
+*.tmp
+*.bak

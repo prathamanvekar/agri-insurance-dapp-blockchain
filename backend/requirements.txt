@@ -1,0 +1,15 @@
+flask
+flask-cors
+flask-sqlalchemy
+requests
+numpy
+pandas
+scikit-learn
+xgboost
+joblib
+web3
+py-solc-x
+python-dotenv
+apscheduler
+earthengine-api
+geemap
